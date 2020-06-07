@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        
+        .box {
+            position: relative;
+            width: 600px;
+            height: 475px;
+            margin: 0 auto;
+        }
+        
+        .slide {
+            display: none;
+            position: absolute;
+            width: 600px;
+            height: 475px;
+        }
+        
+        .slide>img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .nav {
+            position: absolute;
+            bottom: 5px;
+            margin-left: -10px;
+        }
+        
+        .nav>li {
+            opacity: 0.6;
+            background: rgb(168, 166, 166);
+            list-style-type: none;
+            float: left;
+            width: 11px;
+            height: 11px;
+            cursor: pointer;
+            margin-left: 9px;
+            border-radius: 50%;
+        }
+        
+        .nav .active {
+            opacity: 1;
+            background: #FFFFFF;
+        }
+        
+        .left,
+        .right {
+            opacity: 0.4;
+            width: 30px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 50%;
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px;
+            color: #fff;
+            font-size: 20px;
+        }
+        
+        .left:hover,
+        .right:hover {
+            opacity: 0.6;
+            color: white;
+            background: black;
+        }
+        
+        .left {
+            left: 0;
+            border-radius: 0 70% 70% 0;
+        }
+        
+        .right {
+            right: 0;
+            border-radius: 70% 0 0 70%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box" id="box">
+        <!-- 放置图片的盒子 -->
+        <div class="slider" id="slider">
+            <!-- 图片部分 -->
+            <!-- <div class="slide"><img src="imgs/1.jpg"></div>
+            <div class="slide"><img src="imgs/2.jpg"></div>
+            <div class="slide"><img src="imgs/3.jpg"></div>
+            <div class="slide"><img src="imgs/4.jpg"></div>
+            <div class="slide"><img src="imgs/5.jpg"></div>
+            <div class="slide"><img src="imgs/6.jpg"></div>
+            <div class="slide"><img src="imgs/7.jpg"></div>
+            <div class="slide"><img src="imgs/8.jpg"></div> -->
+            <a href="#" class="slide" style="display: block;"><img src="imgs/1.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/2.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/3.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/4.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/5.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/6.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/7.jpg" /></a>
+            <a href="#" class="slide"><img src="imgs/8.jpg" /></a>
+        </div>
+        <!-- 左右部分 -->
+        <span class="left">&lt;</span>
+        <span class="right">&gt;</span>
+        <!-- 底下圆圈部分 -->
+        <ul class="nav" id="nav">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+</body>
+<script src="js/jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        var index = 0; //下标
+        var stop = false; //触发器
+        var imgs = $("#box").find("#slider").children(".slide"); //获取所有的轮播图片
+        var lis = $("#box").find("#nav").children("li"); //获取所有的圆圈
+        //轮播图片
+        var timer = setInterval(function() {
+            if (stop)
+                return;
+            index++;
+            if (index > imgs.length - 1)
+                index = 0;
+            imgs.eq(index).fadeIn().siblings().fadeOut();
+            lis.eq(index).addClass("active").siblings().removeClass("active");
+        }, 5000);
+        //左边
+        $(".left").click(function() {
+            clearInterval(timer);
+            index--;
+            if (index < 0)
+                index = imgs.length - 1;
+            imgs.eq(index).fadeIn().siblings().fadeOut();
+            lis.eq(index).addClass("active").siblings().removeClass("active");
+        });
+        //右边
+        $(".right").click(function() {
+            clearInterval(timer);
+            index++;
+            if (index > imgs.length - 1)
+                index = 0;
+            imgs.eq(index).fadeIn().siblings().fadeOut();
+            lis.eq(index).addClass("active").siblings().removeClass("active");
+        });
+        //小圆圈点击事件
+        lis.hover(function() {
+            index = $(this).index();
+            $(this).addClass("active").siblings().removeClass("active"); //给选中的圆圈添加样式
+            imgs.eq(index).fadeIn(1000).siblings().fadeOut(1000); //轮播图片淡入淡出
+        });
+
+
+        //鼠标划入清除定时器，鼠标划出开始定时器
+        $("#box").mousemove(function() {
+            clearInterval(timer);
+        }).mouseout(function() {
+            timer = setInterval(function() {
+                if (stop)
+                    return;
+                index++;
+                if (index > imgs.length - 1)
+                    index = 0;
+                imgs.eq(index).fadeIn().siblings().fadeOut();
+                lis.eq(index).addClass("active").siblings().removeClass("active");
+            }, 5000);
+        });
+    });
+</script>
+
+</html>
